@@ -34,13 +34,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lx.travelprevention.common.Routes
 import com.lx.travelprevention.common.StateResult
-import com.lx.travelprevention.model.entity.RiskLevelAreaEntity
 import com.lx.travelprevention.ui.agency.AgencyPage
 import com.lx.travelprevention.ui.agency.AgencyViewModel
 import com.lx.travelprevention.ui.area.RiskLevelAreaPage
 import com.lx.travelprevention.ui.area.RiskLevelAreaViewModel
 import com.lx.travelprevention.ui.city.CityPage
 import com.lx.travelprevention.ui.city.CityViewModel
+import com.lx.travelprevention.ui.policy.HealthyTravelPolicyPage
+import com.lx.travelprevention.ui.policy.HealthyTravelPolicyViewModel
 import com.lx.travelprevention.ui.theme.TravelPreventionTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -103,65 +104,17 @@ class MainActivity : ComponentActivity() {
                             val riskLevelArea by viewModel.riskLevelArea.collectAsState()
                             RiskLevelAreaPage(
                                 navController = navController,
-                                levelArea = StateResult.Success(
-                                    RiskLevelAreaEntity(
-                                        "12", listOf(
-                                            RiskLevelAreaEntity.Area(
-                                                areaName = "测试",
-                                                city = "测试",
-                                                communitys = listOf("1", "2", "3", "4"),
-                                                county = "测试",
-                                                countyCode = "测试",
-                                                province = "测试",
-                                                type = "2"
-                                            ), RiskLevelAreaEntity.Area(
-                                                areaName = "测试",
-                                                city = "测试",
-                                                communitys = listOf("1", "2", "3", "4"),
-                                                county = "测试",
-                                                countyCode = "测试",
-                                                province = "测试",
-                                                type = "2"
-                                            ), RiskLevelAreaEntity.Area(
-                                                areaName = "测试",
-                                                city = "测试",
-                                                communitys = listOf("1", "2", "3", "4"),
-                                                county = "测试",
-                                                countyCode = "测试",
-                                                province = "测试",
-                                                type = "2"
-                                            )
-                                        ), "3",
-                                        listOf(
-                                            RiskLevelAreaEntity.Area(
-                                                areaName = "测试",
-                                                city = "测试",
-                                                communitys = listOf("1", "2", "3", "4"),
-                                                county = "测试",
-                                                countyCode = "测试",
-                                                province = "测试",
-                                                type = "2"
-                                            ), RiskLevelAreaEntity.Area(
-                                                areaName = "测试",
-                                                city = "测试",
-                                                communitys = listOf("1", "2", "3", "4"),
-                                                county = "测试",
-                                                countyCode = "测试",
-                                                province = "测试",
-                                                type = "2"
-                                            ), RiskLevelAreaEntity.Area(
-                                                areaName = "测试",
-                                                city = "测试",
-                                                communitys = listOf("1", "2", "3", "4"),
-                                                county = "测试",
-                                                countyCode = "测试",
-                                                province = "测试",
-                                                type = "2"
-                                            )
-                                        ), "2022-06-24 10:57:00"
-                                    )
-                                )
+                                levelArea = riskLevelArea
                             )
+                        }
+                        // 健康出行政策
+                        composable(route = Routes.Policy) {
+                            val viewModel: HealthyTravelPolicyViewModel = hiltViewModel()
+
+                            LaunchedEffect(key1 = Unit, block = {
+
+                            })
+                            HealthyTravelPolicyPage(navController = navController)
                         }
                     }
                 }
