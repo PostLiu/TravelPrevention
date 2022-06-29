@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lx.travelprevention.common.StateResult
@@ -34,8 +33,9 @@ import java.io.InputStreamReader
 @Composable
 fun CityPage(
     navController: NavController = rememberNavController(),
+    type: String = "",
     cities: StateResult<List<City>> = StateResult.Loading,
-    retry: () -> Unit = {}
+    retry: () -> Unit = {},
 ) {
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = "查询城市数据") }, navigationIcon = {
@@ -82,18 +82,26 @@ fun CityPage(
                 }
             }
             is StateResult.Success -> {
-                LoadingSuccess(
-                    paddingValues = paddingValues,
+                LoadingSuccess(paddingValues = paddingValues,
                     header = cities.data?.map { it.parent }.orEmpty(),
                     cities = cities.data.orEmpty(),
                     itemClick = {
+                        val key = when (type) {
+                            "from" -> "from"
+                            "to" -> "to"
+                            else -> "city_id"
+                        }
+                        val value = when (type) {
+                            "from" -> listOf(it.cityId, it.city).joinToString("|")
+                            "to" -> listOf(it.cityId, it.city).joinToString("|")
+                            else -> it.cityId
+                        }
                         navController.previousBackStackEntry?.savedStateHandle?.set(
-                            "city_id",
-                            it.cityId
+                            key = key,
+                            value = value
                         )
                         navController.popBackStack()
-                    }
-                )
+                    })
             }
         }
     }
@@ -135,12 +143,10 @@ fun LoadingSuccess(
             }
         }
         items(cities) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
-                    .clickable { itemClick(it) }
-            ) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+                .clickable { itemClick(it) }) {
                 Text(text = it.city)
             }
             Divider()

@@ -4,6 +4,7 @@ import com.lx.travelprevention.common.Constant
 import com.lx.travelprevention.common.DataResult
 import com.lx.travelprevention.model.entity.AgencyEntity
 import com.lx.travelprevention.model.entity.CityEntity
+import com.lx.travelprevention.model.entity.HealthyTravelPolicyEntity
 import com.lx.travelprevention.model.entity.RiskLevelAreaEntity
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -34,7 +35,7 @@ interface ApiService {
         @Field("from") from: String,
         @Field("to") to: String,
         @Field("key") key: String = Constant.KEY
-    ): DataResult<Any>
+    ): DataResult<HealthyTravelPolicyEntity>
 
     // 查询风险疫情地区
     @GET("springTravel/risk")

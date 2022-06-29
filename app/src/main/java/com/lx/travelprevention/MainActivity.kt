@@ -29,9 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.lx.travelprevention.common.Routes
 import com.lx.travelprevention.common.StateResult
 import com.lx.travelprevention.ui.agency.AgencyPage
@@ -67,17 +69,23 @@ class MainActivity : ComponentActivity() {
                             HomePage(navController = navController)
                         }
                         // 城市
-                        composable(route = Routes.City) {
+                        composable(
+                            route = Routes.City.plus("/{type}"),
+                            arguments = listOf(navArgument("type") { type = NavType.StringType })
+                        ) {
+                            val type = it.arguments?.getString("type").orEmpty()
                             val viewModel: CityViewModel = hiltViewModel()
                             val cities = viewModel.cities.collectAsState().value
                             CityPage(navController = navController,
                                 cities = cities,
+                                type = type,
                                 retry = { viewModel.loadCities() })
                         }
                         // 核酸机构
                         composable(route = Routes.Agency) {
                             val viewModel: AgencyViewModel = hiltViewModel()
                             Log.w(TAG, "onCreate: ${it.lifecycle.currentState}")
+                            // 获取回传的城市id
                             val returnCityId by it.savedStateHandle.getLiveData("city_id", "")
                                 .observeAsState()
                             LaunchedEffect(key1 = Unit, block = {
@@ -90,8 +98,7 @@ class MainActivity : ComponentActivity() {
                                 ) else StateResult.Loading
                             )
                             AgencyPage(
-                                navController = navController,
-                                agency = agency
+                                navController = navController, agency = agency
                             )
                         }
                         // 风险地区
@@ -103,18 +110,44 @@ class MainActivity : ComponentActivity() {
                             })
                             val riskLevelArea by viewModel.riskLevelArea.collectAsState()
                             RiskLevelAreaPage(
-                                navController = navController,
-                                levelArea = riskLevelArea
+                                navController = navController, levelArea = riskLevelArea
                             )
                         }
                         // 健康出行政策
                         composable(route = Routes.Policy) {
                             val viewModel: HealthyTravelPolicyViewModel = hiltViewModel()
+                            // 获取出发地回传的参数数据
+                            val from by it.savedStateHandle.getLiveData("from", "").observeAsState()
+                            val fromCityId =
+                                if (from.isNullOrEmpty()) "" else from.orEmpty().split("|")[0]
+                            val fromCityName =
+                                if (from.isNullOrEmpty()) "" else from.orEmpty().split("|")[1]
+                            // 获取目的地回传的参数数据
+                            val to by it.savedStateHandle.getLiveData("to", "").observeAsState()
+                            val toCityId =
+                                if (to.isNullOrEmpty()) "" else to.orEmpty().split("|")[0]
+                            val toCityName =
+                                if (to.isNullOrEmpty()) "" else to.orEmpty().split("|")[1]
 
-                            LaunchedEffect(key1 = Unit, block = {
-
-                            })
-                            HealthyTravelPolicyPage(navController = navController)
+                            if (fromCityId.isNotEmpty() && toCityId.isNotEmpty()) {
+                                Log.e(TAG, "onCreate: Healthy=====>$fromCityId-----$toCityId")
+                                LaunchedEffect(key1 = Unit, block = {
+                                    viewModel.healthyTravelPolicy(
+                                        from ?: return@LaunchedEffect, to ?: return@LaunchedEffect
+                                    )
+                                })
+                            }
+                            val healthyTravel by viewModel.healthyTravel.collectAsState(
+                                initial = if (from.isNullOrEmpty() && to.isNullOrEmpty()) StateResult.Success(
+                                    data = null
+                                ) else StateResult.Loading
+                            )
+                            HealthyTravelPolicyPage(
+                                navController = navController,
+                                healthy = healthyTravel,
+                                fromCityName = fromCityName,
+                                toCityName = toCityName
+                            )
                         }
                     }
                 }

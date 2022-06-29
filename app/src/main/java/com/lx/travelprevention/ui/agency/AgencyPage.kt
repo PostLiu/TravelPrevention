@@ -65,7 +65,7 @@ fun AgencyPage(
                         contentAlignment = Alignment.TopCenter
                     ) {
                         ChooseCity() {
-                            navController.navigate(Routes.City)
+                            navController.navigate(Routes.City.plus("/other"))
                         }
                     }
                 } else {
