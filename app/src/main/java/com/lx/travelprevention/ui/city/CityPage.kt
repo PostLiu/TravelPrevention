@@ -96,10 +96,7 @@ fun CityPage(
                             "to" -> listOf(it.cityId, it.city).joinToString("|")
                             else -> it.cityId
                         }
-                        navController.previousBackStackEntry?.savedStateHandle?.set(
-                            key = key,
-                            value = value
-                        )
+                        navController.previousBackStackEntry?.savedStateHandle?.set(key, value)
                         navController.popBackStack()
                     })
             }

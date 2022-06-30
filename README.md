@@ -15,6 +15,18 @@
 
 <img src="screen/home.jpg" width="50%"/>
 
+### 城市列表
+
+<img src="screen/city.jpg" width="50%"/>
+
+### 风险地区
+
+<img src="screen/level_area.jpg" width="50%"/>
+
+### 核酸机构
+
+<img src="screen/agency.jpg" width="50%"/>
+
 # 其他
 
 项目文档持续更新中
