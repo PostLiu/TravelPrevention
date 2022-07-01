@@ -29,8 +29,9 @@
 
 ### 健康出行政策
 
-<img src="healthy_1.jpg" width="50%"/>
-<img src="healthy_2.jpg" width="50%"/>
+<img src="screen/healthy_1.jpg" width="50%"/>
+
+<img src="screen/healthy_2.jpg" width="50%"/>
 
 # 其他
 
