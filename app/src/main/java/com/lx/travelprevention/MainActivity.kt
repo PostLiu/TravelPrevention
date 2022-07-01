@@ -132,9 +132,7 @@ class MainActivity : ComponentActivity() {
                             if (fromCityId.isNotEmpty() && toCityId.isNotEmpty()) {
                                 Log.e(TAG, "onCreate: Healthy=====>$fromCityId-----$toCityId")
                                 LaunchedEffect(key1 = Unit, block = {
-                                    viewModel.healthyTravelPolicy(
-                                        from ?: return@LaunchedEffect, to ?: return@LaunchedEffect
-                                    )
+                                    viewModel.healthyTravelPolicy(fromCityId, toCityId)
                                 })
                             }
                             val healthyTravel by viewModel.healthyTravel.collectAsState(

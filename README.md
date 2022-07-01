@@ -27,6 +27,11 @@
 
 <img src="screen/agency.jpg" width="50%"/>
 
+### 健康出行政策
+
+<img src="healthy_1.jpg" width="50%"/>
+<img src="healthy_2.jpg" width="50%"/>
+
 # 其他
 
 项目文档持续更新中
