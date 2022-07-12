@@ -9,6 +9,10 @@ import javax.inject.Inject
 @HiltAndroidApp
 class TravelPreventionApp : Application(), Configuration.Provider {
 
+    companion object {
+        fun newInstance() = TravelPreventionApp()
+    }
+
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 

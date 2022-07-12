@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -34,8 +35,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.lx.travelprevention.common.Constant
+import com.lx.travelprevention.common.DataStoreUtils
 import com.lx.travelprevention.common.Routes
 import com.lx.travelprevention.common.StateResult
+import com.lx.travelprevention.model.entity.ThemeType
 import com.lx.travelprevention.ui.agency.AgencyPage
 import com.lx.travelprevention.ui.agency.AgencyViewModel
 import com.lx.travelprevention.ui.area.RiskLevelAreaPage
@@ -44,6 +49,7 @@ import com.lx.travelprevention.ui.city.CityPage
 import com.lx.travelprevention.ui.city.CityViewModel
 import com.lx.travelprevention.ui.policy.HealthyTravelPolicyPage
 import com.lx.travelprevention.ui.policy.HealthyTravelPolicyViewModel
+import com.lx.travelprevention.ui.set.theme.MultipleThemesPage
 import com.lx.travelprevention.ui.theme.TravelPreventionTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,10 +60,30 @@ class MainActivity : ComponentActivity() {
         private const val TAG = "MainActivity"
     }
 
+    private val dataStoreUtils by lazy { DataStoreUtils.instance(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TravelPreventionTheme {
+            var selectedTheme by remember { mutableStateOf(ThemeType.PURPLE) }
+            var saveColor by remember { mutableStateOf(Color(ThemeType.PURPLE.color)) }
+            LaunchedEffect(key1 = Unit, block = {
+                Log.e("onCreate", "onCreate: get color from preference")
+                saveColor = Color(dataStoreUtils.readLong(Constant.THEME) ?: ThemeType.PURPLE.color)
+                selectedTheme = ThemeType.defaultThemes.findLast { Color(it.color) == saveColor }
+                    ?: ThemeType.PURPLE
+            })
+            // 读取缓存的颜色
+            LaunchedEffect(key1 = selectedTheme, block = {
+                Log.e(TAG, "onCreate: save color to preference")
+                dataStoreUtils.writeLong(Constant.THEME, selectedTheme.color)
+            })
+            val primaryColor = Color(selectedTheme.color)
+            val systemUiController = rememberSystemUiController()
+            SideEffect {
+                systemUiController.setSystemBarsColor(primaryColor)
+            }
+            TravelPreventionTheme(themeType = selectedTheme) {
                 // A surface container using the 'background' color from the theme
                 val navController = rememberNavController()
                 Surface(
@@ -147,6 +173,15 @@ class MainActivity : ComponentActivity() {
                                 toCityName = toCityName
                             )
                         }
+                        // 主题色
+                        composable(route = Routes.Setting) {
+                            MultipleThemesPage(
+                                navController = navController,
+                                themeType = selectedTheme
+                            ) {
+                                selectedTheme = it
+                            }
+                        }
                     }
                 }
             }
@@ -157,7 +192,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomePage(navController: NavController = rememberNavController()) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = "防疫出行") })
+        TopAppBar(title = { Text(text = "防疫出行") }, actions = {
+            IconButton(onClick = {
+                navController.navigate(Routes.Setting)
+            }) {
+                Icon(imageVector = Icons.Filled.Settings, contentDescription = null)
+            }
+        })
     }) {
         LazyColumn(
             modifier = Modifier

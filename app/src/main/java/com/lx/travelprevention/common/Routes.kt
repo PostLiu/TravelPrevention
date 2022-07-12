@@ -7,4 +7,5 @@ object Routes {
     const val Area = "/area"
     const val Policy = "policy"
     const val City = "/city"
+    const val Setting = "/setting"
 }
