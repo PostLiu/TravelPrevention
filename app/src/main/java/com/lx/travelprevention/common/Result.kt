@@ -1,7 +1,8 @@
+@file:Suppress("unused")
+
 package com.lx.travelprevention.common
 
 import com.google.gson.annotations.SerializedName
-
 
 data class DataResult<out T>(
     @SerializedName("error_code") val code: Int,

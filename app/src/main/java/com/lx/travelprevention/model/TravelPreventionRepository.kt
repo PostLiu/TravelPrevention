@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.lx.travelprevention.model
 
 import com.lx.travelprevention.common.DataResult.Companion.isSuccess
@@ -5,6 +7,7 @@ import com.lx.travelprevention.common.StateResult
 import com.lx.travelprevention.dao.CityDao
 import com.lx.travelprevention.network.ApiService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton

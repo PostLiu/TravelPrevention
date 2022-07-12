@@ -1,16 +1,11 @@
 package com.lx.travelprevention.ui.theme
 
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.lx.travelprevention.MainActivity
-import com.lx.travelprevention.common.Constant
-import com.lx.travelprevention.common.DataStoreUtils
 import com.lx.travelprevention.model.entity.ThemeType
 
 private val DarkColorPalette = darkColors(
