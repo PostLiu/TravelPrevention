@@ -53,7 +53,7 @@ class DataStoreUtils(private val context: Context) {
         context.dataStore.data.map { it[doublePreferencesKey(key)] }.firstOrNull()
 
     suspend fun readString(key: String) =
-        context.dataStore.data.map { it[stringSetPreferencesKey(key)] }.firstOrNull()
+        context.dataStore.data.map { it[stringPreferencesKey(key)] }.firstOrNull()
 
     suspend fun readBoolean(key: String) =
         context.dataStore.data.map { it[booleanPreferencesKey(key)] }.firstOrNull()

@@ -2,10 +2,7 @@ package com.lx.travelprevention.network
 
 import com.lx.travelprevention.common.Constant
 import com.lx.travelprevention.common.DataResult
-import com.lx.travelprevention.model.entity.AgencyEntity
-import com.lx.travelprevention.model.entity.CityEntity
-import com.lx.travelprevention.model.entity.HealthyTravelPolicyEntity
-import com.lx.travelprevention.model.entity.RiskLevelAreaEntity
+import com.lx.travelprevention.model.entity.*
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -42,4 +39,12 @@ interface ApiService {
     suspend fun riskLevelArea(
         @Query("key") key: String = Constant.KEY
     ): DataResult<RiskLevelAreaEntity>
+
+    // 查询指定城市的天气
+    @FormUrlEncoded
+    @POST("simpleWeather/query")
+    suspend fun weatherCity(
+        @Field("city") city: String,
+        @Field("key") key: String = Constant.WEATHER_KEY
+    ): DataResult<CityWeatherEntity>
 }

@@ -68,4 +68,14 @@ class TravelPreventionRepository @Inject constructor(
             emit(StateResult.Failed(result.message))
         }
     }.flowOn(Dispatchers.IO)
+
+    // 获取城市天气
+    fun weatherCity(city: String) = flow {
+        val result = apiService.weatherCity(city = city)
+        if (result.isSuccess) {
+            emit(StateResult.Success(result.data))
+        } else {
+            emit(StateResult.Failed(result.message))
+        }
+    }.flowOn(Dispatchers.IO)
 }
