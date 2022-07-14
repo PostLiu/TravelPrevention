@@ -26,6 +26,7 @@ import com.lx.travelprevention.ui.main.MainViewModel
 import com.lx.travelprevention.ui.policy.HealthyTravelPolicyPage
 import com.lx.travelprevention.ui.policy.HealthyTravelPolicyViewModel
 import com.lx.travelprevention.ui.set.theme.MultipleThemesPage
+import kotlinx.coroutines.launch
 
 
 fun NavGraphBuilder.theme(
@@ -137,16 +138,14 @@ fun NavGraphBuilder.main(navController: NavHostController, dataStoreUtils: DataS
         LaunchedEffect(key1 = Unit, block = {
             selectedCity = dataStoreUtils.readString(Constant.CITY_NAME) ?: ""
         })
-        // 保存选择的城市到本地缓存
-        LaunchedEffect(key1 = selectedCity, block = {
-            dataStoreUtils.writeString(Constant.CITY_NAME, selectedCity)
-        })
+        val scope = rememberCoroutineScope()
         val viewModel: MainViewModel = hiltViewModel()
         val cityList = viewModel.cityList.collectAsState().value
         val weather = viewModel.weather.collectAsState().value
-        if (selectedCity.isNotEmpty()) {
-            Log.e(MainActivity.TAG, "main: 选择的城市：$selectedCity")
-            LaunchedEffect(key1 = selectedCity, block = {
+        val queryCity = if (weather is StateResult.Success) weather.data?.city else null
+        // 初次查询的结果中的城市为空时才需要查询天气
+        if (queryCity.isNullOrEmpty()) {
+            LaunchedEffect(key1 = Unit, block = {
                 viewModel.weatherCity(selectedCity)
             })
         }
@@ -156,6 +155,12 @@ fun NavGraphBuilder.main(navController: NavHostController, dataStoreUtils: DataS
             weather = if (weather is StateResult.Success) weather.data else null,
         ) {
             selectedCity = it
+            // 如果已经查询到的城市跟选择的城市不一样，则调用查询
+            scope.launch {
+                dataStoreUtils.writeString(Constant.CITY_NAME, selectedCity)
+                Log.e(MainActivity.TAG, "main: 选择的城市：$selectedCity")
+                viewModel.weatherCity(selectedCity)
+            }
         }
     }
 }
