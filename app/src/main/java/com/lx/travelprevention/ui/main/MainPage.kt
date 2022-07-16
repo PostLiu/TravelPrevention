@@ -70,17 +70,17 @@ fun HomePage(
                 TravelPreventionTitle()
             }
             item {
-                NucleicAcidAgency() {
+                NucleicAcidAgency {
                     navController.navigate(Routes.Agency)
                 }
             }
             item {
-                RiskLevelArea() {
+                RiskLevelArea {
                     navController.navigate(Routes.Area)
                 }
             }
             item {
-                HealthyTravelPolicy() {
+                HealthyTravelPolicy {
                     navController.navigate(Routes.Policy)
                 }
             }
